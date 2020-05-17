@@ -1,0 +1,64 @@
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+const byte addr[] = "1Node";
+const byte pipe = 1;  // 指定通道編號
+RF24 RF(2,3);//ce,csn
+struct Signal{
+  byte thro;
+  byte rudd;
+  byte elev;
+  byte aile;};
+  
+Signal data;  
+int signal1 = 0;
+int signal2 = 0;
+int signal3 = 0;
+int signal4 = 0;
+
+int m1 = 9;
+int m2 = 10;
+int m3 = 5;
+int m4 = 6  ;
+void Reset(){
+  data.thro = 127;//中立點
+  data.rudd = 127;
+  data.elev = 127;
+  data.aile = 127;}
+   
+void setup() {
+  Serial.begin(9600);
+  pinMode(m1,OUTPUT);
+  pinMode(m2,OUTPUT);
+  pinMode(m3,OUTPUT);
+  pinMode(m4,OUTPUT);
+  Reset();
+  RF.begin();
+   RF.setChannel(83);//頻道編號
+   RF.openWritingPipe(addr);//通道地址
+   RF.setPALevel(RF24_PA_MIN);//功率
+   RF.setDataRate(RF24_250KBPS);//速率
+  RF.startListening();  // 開始接收
+}
+unsigned long lastRecvTime = 0;
+
+void recvData()
+{
+while ( RF.available() ) {
+RF.read(&data, sizeof(Signal));
+lastRecvTime = millis();   //接收
+}
+}
+
+void loop() {
+  int sp1,sp2;
+ recvData();
+unsigned long now = millis();
+if ( now - lastRecvTime > 1000 ) {
+Reset(); // 斷線
+}
+signal1=map(data.thro,0,255,500,2500);//這邊的直出來會是和航模遙控器一樣的PWM訊號 但範圍較寬
+signal2=map(data.rudd,0,255,500,2500);//航模遙控器約在900~2100μs
+signal3=map(data.elev,0,255,500,2500);//這邊會是500~2500μs
+signal4=map(data.aile,0,255,500,2500);//直插伺服馬達的訊號就能控制了
+}
