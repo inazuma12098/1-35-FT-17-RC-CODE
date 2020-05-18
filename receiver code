@@ -9,7 +9,6 @@ struct Signal{
   byte rudd;
   byte elev;
   byte aile;};
-  
 Signal data;  
 int signal1 = 0;
 int signal2 = 0;
@@ -35,7 +34,7 @@ void setup() {
   Reset();
   RF.begin();
    RF.setChannel(83);//頻道編號
-   RF.openWritingPipe(addr);//通道地址
+   RF.openReadingPipe(pipe,addr);//通道地址
    RF.setPALevel(RF24_PA_MIN);//功率
    RF.setDataRate(RF24_250KBPS);//速率
   RF.startListening();  // 開始接收
@@ -57,8 +56,79 @@ unsigned long now = millis();
 if ( now - lastRecvTime > 1000 ) {
 Reset(); // 斷線
 }
-signal1=map(data.thro,0,255,500,2500);//這邊的直出來會是和航模遙控器一樣的PWM訊號 但範圍較寬
-signal2=map(data.rudd,0,255,500,2500);//航模遙控器約在900~2100μs
-signal3=map(data.elev,0,255,500,2500);//這邊會是500~2500μs
-signal4=map(data.aile,0,255,500,2500);//直插伺服馬達的訊號就能控制了
+signal1=map(data.thro,0,255,500,2500);
+signal2=map(data.rudd,0,255,500,2500);
+signal3=map(data.elev,0,255,500,2500);
+signal4=map(data.aile,0,255,500,2500);
+
+if(signal1<1550&&signal1>1450&&signal2>1450&&signal2<1550){
+  Serial.println("STOP");
+  digitalWrite(m1,0);
+  digitalWrite(m2,0);
+  digitalWrite(m3,0);
+  digitalWrite(m4,0);}
+  
+else if(signal1>1550&&signal2>1450&&signal2<1550){
+  sp1= (signal1-1550)/3.7;
+  if(sp1>255)sp1=255;
+  Serial.println("Forward");
+  analogWrite(m1,0);
+  analogWrite(m2,sp1);
+  analogWrite(m3,0);
+  analogWrite(m4,sp1);}
+  
+else if(signal1<1450&&signal2>1450&&signal2<1550){
+    sp1= (1450-signal1)/3.7;
+    if(sp1>255)sp1=255;
+  Serial.println("Backward");
+  analogWrite(m1,sp1);
+  analogWrite(m2,0);
+  analogWrite(m3,sp1);
+  analogWrite(m4,0);}
+
+if(signal1<1550&&signal1>1450&&signal2>1550){
+  sp1=(signal2-1550)/3.7;
+  if(sp1>255)sp1=255;
+  Serial.println("LEFT");
+  analogWrite(m1,0);
+  analogWrite(m2,sp1);
+  analogWrite(m3,sp1);
+  analogWrite(m4,0);}
+  
+if(signal1<1550&&signal1>1450&&signal2<1450){
+  sp1= (1450-signal2)/3.7;
+  if(sp1>255)sp1=255;
+  Serial.println("RIGHT");
+  analogWrite(m1,sp1);
+  analogWrite(m2,0);
+  analogWrite(m3,0);   
+  analogWrite(m4,sp1);}  
+  
+if(signal1>1550&&signal2>1550){
+  Serial.println("Forward LEFT");
+  digitalWrite(m1,0);
+  digitalWrite(m2,1);
+  digitalWrite(m3,0);
+  digitalWrite(m4,0);}
+
+if(signal1>1550&&signal2<1450){
+  Serial.println("Forward RIGHT");
+  digitalWrite(m1,0);
+  digitalWrite(m2,0);
+  digitalWrite(m3,0);
+  digitalWrite(m4,1);}  
+  
+if(signal1<1450&&signal2>1550){
+  Serial.println("Backward LEFT");
+  digitalWrite(m1,1);
+  digitalWrite(m2,0);
+  digitalWrite(m3,0);
+  digitalWrite(m4,0);}
+      
+if(signal1<1450&&signal2<1450){
+  Serial.println("Backward RIGHT");
+  digitalWrite(m1,0);
+  digitalWrite(m2,0);
+  digitalWrite(m3,1);
+  digitalWrite(m4,0);} 
 }
