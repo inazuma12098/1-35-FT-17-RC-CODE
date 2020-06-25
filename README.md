@@ -5,4 +5,4 @@
 
 <br>發射端的電路我是以可變電阻接在A0、A1來讀取電位(analogRead)
 <br>依照值得不同發出不同的值。
-<a href="transmitter code.html">
+<a href="transmitter code.html">發射端簡易程式碼</a>
