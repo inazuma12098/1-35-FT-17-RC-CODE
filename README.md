@@ -7,9 +7,9 @@
 <br>依照值的不同發出不同的值。腳位的編號在程式碼中都有寫
 <br>
 <br>
-檔案可以在上面的.ino檔下載
+程式碼可以在下面的連結複製
 <br>
 <br>
-<a href="transmitter code.html">發射端簡易程式碼(網頁瀏覽)</a>
+<a href="transmitter code.html" target ="blank">發射端簡易程式碼(網頁瀏覽)</a>
 <br>
 <a href="receiver code.html">接收端簡易程式碼(網頁瀏覽)</a>
