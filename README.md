@@ -6,7 +6,9 @@
 <br>發射端的電路我是以可變電阻接在A0、A1等等腳位來讀取電位(analogRead)
 <br>依照值的不同發出不同的值。腳位的編號在程式碼中都有寫
 <br>
+<br>
 檔案可以在上面的.ino檔下載
+<br>
 <br>
 <a href="transmitter code.html">發射端簡易程式碼(網頁瀏覽)</a>
 <br>
