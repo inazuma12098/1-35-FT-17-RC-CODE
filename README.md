@@ -5,6 +5,9 @@
 
 <br>發射端的電路我是以可變電阻接在A0、A1等等腳位來讀取電位(analogRead)
 <br>依照值的不同發出不同的值。腳位的編號在程式碼中都有寫
+<br>nRF24L01的MISO連nano的D12
+<br>MOSI連nano的D11
+<br>SCK連nano的D13
 <br>
 <br>
 程式碼可以在下面的連結複製
