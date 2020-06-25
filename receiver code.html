@@ -1,0 +1,84 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<pre>
+  <font color="#95a5a6">&#47;*</font>
+  <font color="#95a5a6"></font>
+  <font color="#95a5a6">這邊的程式碼是搭配Arduino nano寫的，不同的板子腳位功能也可能不同 </font>
+  <font color="#95a5a6">請去看完datasheet再測試</font>
+  <font color="#95a5a6"></font>
+  <font color="#95a5a6"></font>
+  <font color="#95a5a6">*&#47;</font>
+  <font color="#5e6d03">#include</font> <font color="#434f54">&lt;</font><font color="#000000">nRF24L01</font><font color="#434f54">.</font><font color="#000000">h</font><font color="#434f54">&gt;</font>
+  <font color="#5e6d03">#include</font> <font color="#434f54">&lt;</font><b><font color="#d35400">RF24</font></b><font color="#434f54">.</font><font color="#000000">h</font><font color="#434f54">&gt;</font>
+  <font color="#00979c">const</font> <font color="#00979c">byte</font> <font color="#000000">addr</font><font color="#000000">[</font><font color="#000000">]</font> <font color="#434f54">=</font> <font color="#005c5f">&#34;FT-17&#34;</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;通道位置5個字元</font>
+  <font color="#00979c">const</font> <font color="#00979c">byte</font> <font color="#000000">pipe</font> <font color="#434f54">=</font> <font color="#000000">1</font><font color="#000000">;</font> &nbsp;<font color="#434f54">&#47;&#47; 通道編號有0~5</font>
+  <b><font color="#d35400">RF24</font></b> <font color="#000000">RF</font><font color="#000000">(</font><font color="#000000">2</font><font color="#434f54">,</font><font color="#000000">3</font><font color="#000000">)</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;名字(ce,csn) 隨便的腳位都可以，若使用原本函式庫的範例是7和8</font>
+  
+  <font color="#00979c">struct</font> <font color="#000000">Signal</font><font color="#000000">{</font><font color="#434f54">&#47;&#47;跟發射端配對的訊號 可以自己命名想要的</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">thro</font><font color="#000000">;</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">rudd</font><font color="#000000">;</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">elev</font><font color="#000000">;</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">aile</font><font color="#000000">;</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">speed1</font><font color="#000000">;</font>
+   &nbsp;<font color="#00979c">byte</font> <font color="#000000">trigger</font><font color="#000000">;</font>
+   &nbsp;<font color="#000000">}</font><font color="#000000">;</font>
+   &nbsp;
+  <font color="#000000">Signal</font> <font color="#000000">data</font><font color="#000000">;</font> &nbsp;
+  
+  <font color="#00979c">int</font> <font color="#000000">signal1</font><font color="#434f54">,</font><font color="#000000">signal2</font><font color="#434f54">,</font><font color="#000000">signal3</font><font color="#434f54">,</font><font color="#000000">signal4</font><font color="#434f54">,</font><font color="#000000">signal5</font><font color="#434f54">,</font><font color="#000000">signal6</font><font color="#000000">;</font>
+  
+  <font color="#00979c">void</font> <font color="#000000">Reset</font><font color="#000000">(</font><font color="#000000">)</font>
+   &nbsp;<font color="#000000">{</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">thro</font> <font color="#434f54">=</font> <font color="#000000">127</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;斷線及沒連線時的訊號數字</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">rudd</font> <font color="#434f54">=</font> <font color="#000000">127</font><font color="#000000">;</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">elev</font> <font color="#434f54">=</font> <font color="#000000">127</font><font color="#000000">;</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">aile</font> <font color="#434f54">=</font> <font color="#000000">127</font><font color="#000000">;</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">speed1</font> <font color="#434f54">=</font> <font color="#000000">127</font><font color="#000000">;</font>
+   &nbsp;<font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">trigger</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font><font color="#000000">}</font>
+   &nbsp;&nbsp;
+  <font color="#00979c">void</font> <font color="#5e6d03">setup</font><font color="#000000">(</font><font color="#000000">)</font> <font color="#000000">{</font>
+   &nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">9600</font><font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;
+   &nbsp;<font color="#000000">Reset</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;重置</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">begin</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;開啟無線模組</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">setChannel</font><font color="#000000">(</font><font color="#000000">50</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;設定頻道0~127,頻率＝2400+0~127,有可能超出2.4GHz免許可證頻帶（2.4-2.4835 GHz)，請好好設定不要超出範圍</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">openReadingPipe</font><font color="#000000">(</font><font color="#000000">pipe</font><font color="#434f54">,</font><font color="#000000">addr</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;<font color="#434f54">&#47;&#47;設定通道地址</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#000000">setPALevel</font><font color="#000000">(</font><font color="#000000">RF24_PA_MIN</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;設定功率 RF24_PA_MIN（最小功率) RF24_PA_LOW（低功率）RF24_PA_HIGH（高功率）RF24_PA_MAX（最大功率）</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#000000">setDataRate</font><font color="#000000">(</font><font color="#000000">RF24_250KBPS</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;<font color="#434f54">&#47;&#47;設定速率 250KBPS、1MBPS、2MBPS</font>
+   &nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">startListening</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;開始接收</font>
+  <font color="#000000">}</font>
+  <font color="#00979c">unsigned</font> <font color="#00979c">long</font> <font color="#000000">lastreceive</font> <font color="#434f54">=</font> <font color="#000000">0</font><font color="#000000">;</font> &nbsp;&nbsp;<font color="#434f54">&#47;&#47;宣告一個時間變數</font>
+  
+  <font color="#00979c">void</font> <font color="#000000">startreceive</font><font color="#000000">(</font><font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;讀取訊號用的副程式</font>
+   &nbsp;<font color="#000000">{</font>
+   &nbsp;&nbsp;&nbsp;<font color="#5e6d03">while</font> <font color="#000000">(</font> <font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">available</font><font color="#000000">(</font><font color="#000000">)</font> <font color="#000000">)</font> 
+   &nbsp;&nbsp;&nbsp;<font color="#000000">{</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">RF</font><font color="#434f54">.</font><font color="#d35400">read</font><font color="#000000">(</font><font color="#434f54">&amp;</font><font color="#000000">data</font><font color="#434f54">,</font> <font color="#00979c">sizeof</font><font color="#000000">(</font><font color="#000000">Signal</font><font color="#000000">)</font><font color="#000000">)</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;接收</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">lastreceive</font> <font color="#434f54">=</font> <font color="#d35400">millis</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+   &nbsp;<font color="#000000">}</font>
+   &nbsp;
+   &nbsp;<font color="#00979c">void</font> <font color="#5e6d03">loop</font><font color="#000000">(</font><font color="#000000">)</font> <font color="#000000">{</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">startreceive</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;接收訊號</font>
+   &nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#00979c">unsigned</font> <font color="#00979c">long</font> <font color="#000000">now</font> <font color="#434f54">=</font> <font color="#d35400">millis</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;&nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#5e6d03">if</font> <font color="#000000">(</font> <font color="#000000">now</font> <font color="#434f54">-</font> <font color="#000000">lastreceive</font> <font color="#434f54">&gt;</font> <font color="#000000">1000</font> <font color="#000000">)</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47; 超過一定時間沒訊號就回到重置的動作上(斷訊保護)</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">{</font> &nbsp;&nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#000000">Reset</font><font color="#000000">(</font><font color="#000000">)</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#000000">}</font>
+   &nbsp;&nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal1</font><font color="#434f54">=</font><font color="#d35400">map</font><font color="#000000">(</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">thro</font><font color="#434f54">,</font><font color="#000000">0</font><font color="#434f54">,</font><font color="#000000">255</font><font color="#434f54">,</font><font color="#000000">500</font><font color="#434f54">,</font><font color="#000000">2500</font><font color="#000000">)</font><font color="#000000">;</font><font color="#434f54">&#47;&#47;把原本發射端訊號值0~255放大為500~2500，中立點大約是1496</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal2</font><font color="#434f54">=</font><font color="#d35400">map</font><font color="#000000">(</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">rudd</font><font color="#434f54">,</font><font color="#000000">0</font><font color="#434f54">,</font><font color="#000000">255</font><font color="#434f54">,</font><font color="#000000">500</font><font color="#434f54">,</font><font color="#000000">2500</font><font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal3</font><font color="#434f54">=</font><font color="#d35400">map</font><font color="#000000">(</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">elev</font><font color="#434f54">,</font><font color="#000000">0</font><font color="#434f54">,</font><font color="#000000">255</font><font color="#434f54">,</font><font color="#000000">500</font><font color="#434f54">,</font><font color="#000000">2500</font><font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal4</font><font color="#434f54">=</font><font color="#d35400">map</font><font color="#000000">(</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">aile</font><font color="#434f54">,</font><font color="#000000">0</font><font color="#434f54">,</font><font color="#000000">255</font><font color="#434f54">,</font><font color="#000000">500</font><font color="#434f54">,</font><font color="#000000">2500</font><font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal5</font><font color="#434f54">=</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">speed1</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;照發射端的值</font>
+   &nbsp;&nbsp;&nbsp;<font color="#000000">signal6</font><font color="#434f54">=</font><font color="#000000">data</font><font color="#434f54">.</font><font color="#000000">trigger</font><font color="#000000">;</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;照發射端的值</font>
+   &nbsp;&nbsp;&nbsp;
+   &nbsp;&nbsp;&nbsp;<font color="#434f54">&#47;&#47;在監控視窗顯示值</font>
+   &nbsp;&nbsp;&nbsp;<b><font color="#d35400">Serial</font></b><font color="#434f54">.</font><font color="#d35400">println</font><font color="#000000">(</font><font color="#00979c">String</font><font color="#000000">(</font><font color="#005c5f">&#34;&#34;</font><font color="#000000">)</font><font color="#434f54">+</font><font color="#005c5f">&#34;訊號1 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal1</font><font color="#434f54">+</font><font color="#005c5f">&#34; 訊號2 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal2</font><font color="#434f54">+</font><font color="#005c5f">&#34; 訊號3 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal3</font><font color="#434f54">+</font><font color="#005c5f">&#34; 訊號4 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal4</font><font color="#434f54">+</font><font color="#005c5f">&#34; 訊號5 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal5</font><font color="#434f54">+</font><font color="#005c5f">&#34; 訊號6 = &#34;</font><font color="#434f54">+</font> <font color="#000000">signal6</font> <font color="#000000">)</font><font color="#000000">;</font>
+   &nbsp;
+   &nbsp;&nbsp;
+   &nbsp;
+   &nbsp;<font color="#000000">}</font>
+  
+  </pre>
