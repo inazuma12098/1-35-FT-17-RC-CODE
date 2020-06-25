@@ -7,6 +7,6 @@
 <br>依照值的不同發出不同的值。腳位的編號在程式碼中都有寫
 <br>
 <br>
-<a href="transmitter code.html">發射端簡易程式碼</a>
+<a href="transmitter code.html">發射端簡易程式碼(網頁瀏覽)</a>
 <br>
-<a href="receiver code.html">接收端簡易程式碼</a>
+<a href="receiver code.html">接收端簡易程式碼(網頁瀏覽)</a>
