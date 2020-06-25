@@ -15,4 +15,4 @@
 <br>
 <a href="transmitter code.html" target ="blank">發射端簡易程式碼(網頁瀏覽)</a>
 <br>
-<a href="receiver code.html" target ="blank">接收端簡易程式碼(網頁瀏覽)</a>
+<a href="receiver code.html" target ="blank">接收端簡易程式碼(網頁瀏覽)</a> 只有在監控視窗顯示數值
