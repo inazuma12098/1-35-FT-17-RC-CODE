@@ -12,11 +12,11 @@
 <br>
 使用這個程式碼之前請先安中這個函式庫喔 
 <br>
-<a href="https://github.com/nRF24/RF24 " target = "blank">RF24</a>
+<a href="https://github.com/nRF24/RF24 " target = "_blank">RF24</a>
 <br><br>
 程式碼可以在下面的連結複製
 <br>
 <br>
-<a href="transmitter code.html" target ="blank">發射端簡易程式碼(網頁瀏覽)</a>
+<a href="transmitter code.html" target ="_blank">發射端簡易程式碼(網頁瀏覽)</a>
 <br>
-<a href="receiver code.html" target ="blank">接收端簡易程式碼(網頁瀏覽)</a> 只有在監控視窗顯示數值
+<a href="receiver code.html" target ="_blank">接收端簡易程式碼(網頁瀏覽)</a> 只有在監控視窗顯示數值
