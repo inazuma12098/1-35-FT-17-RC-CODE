@@ -12,7 +12,7 @@
 <br>
 使用這個程式碼之前請先安中這個函式庫喔 
 <br>
-https://github.com/nRF24/RF24
+<a href="https://github.com/nRF24/RF24 " target = "blank">RF24</a>
 <br><br>
 程式碼可以在下面的連結複製
 <br>
