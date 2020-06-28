@@ -11,7 +11,8 @@
 <br>SCK連nano的D13(SCK)
 <br>CE連D9(自訂)
 <br>CSN連D10(自訂)
-<br><font color="RED">nRF24L01用的是3.3Ｖ</font>
+<br>
+<font color="#FF0000">nRF24L01用的是3.3Ｖ</font>
 <br>
 使用這個程式碼之前請先安裝這個函式庫喔 
 <br>
